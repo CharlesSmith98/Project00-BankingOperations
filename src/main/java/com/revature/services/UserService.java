@@ -31,7 +31,10 @@ public class UserService {
 			}
 		}
 		
-		userList.add(new User(first, last, user, pass, 0));
+		if(userList.add(new User(first, last, user, pass, 0))) {
+			System.out.println("User: " + user + " has been successsfully " 
+					+ "registered!!");
+		}
 		userFileIO.writeObjects(userList);
 	}
 	

@@ -2,18 +2,23 @@ package com.revature.menus;
 
 public class MenuItem {
 
-	private String id;
+	private int id;
 	private String desc;
 	
 	public MenuItem() {
-		this.id = null;
+		this.id = 0;
 		this.desc = null;
 	}
 	
-	public MenuItem(String id, String desc) {
+	public MenuItem(int id, String desc) {
 		this();
 		this.id = id;
 		this.desc = desc;
+	}
+	
+	@Override
+	public String toString() {
+		return id + " --- " + desc;
 	}
 	
 }

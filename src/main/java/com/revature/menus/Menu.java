@@ -22,10 +22,24 @@ public abstract class Menu {
 		return this.menuItems;
 	}
 	
+	public void setMenuItems(ArrayList<MenuItem> items) {
+		this.menuItems = items;
+	}
+	
 	public String getPrompt() {
 		return this.prompt;
 	}
 	
-	public abstract void processSelection(String sel);
+	public void setPrompt(String prompt) {
+		this.prompt = prompt;
+	}
+	
+	public void display() {
+		System.out.println(this.prompt+"\n");
+		for (MenuItem i : this.menuItems) {
+			System.out.println(i);
+		}
+		System.out.print("\n>>");
+	}
 	
 }
