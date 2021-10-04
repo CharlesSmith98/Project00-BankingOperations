@@ -54,7 +54,7 @@ public class UserService {
 			}
 		}
 		
-		System.out.println("User: " + user + " does not exist!");
+		System.out.println("\nUser: " + user + " does not exist!\n");
 		return null;
 	}
 	
