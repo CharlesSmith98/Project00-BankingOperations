@@ -1,13 +1,9 @@
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
-import com.revature.exceptions.IncorrectPasswordException;
 import com.revature.exceptions.QuitApplicationException;
-import com.revature.exceptions.UsernameUnavailableException;
 import com.revature.logging.Logging;
 import com.revature.menus.UserMenu;
-import com.revature.models.Employee;
-import com.revature.models.User;
 import com.revature.services.UserService;
 
 public class BankingApp {
