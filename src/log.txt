@@ -1,5 +1,0 @@
-2021-10-03 12:09:36 WARN  Logging:40 - That username is already in use.
-2021-10-03 12:13:40 WARN  Logging:40 - User tried registering a username that already exists.
-2021-10-03 12:18:25 WARN  Logging:40 - User tried registering a username that already exists.
-2021-10-03 12:53:01 WARN  Logging:59 - Password is incorrect
-2021-10-03 12:55:24 WARN  Logging:59 - User entered an incorrect password

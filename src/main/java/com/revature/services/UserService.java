@@ -9,11 +9,11 @@ import com.revature.models.User;
 
 public class UserService {
 
-	private String fileName;
+	//private String fileName;
 	private FileIO<User> userFileIO;
 	
 	public UserService(String fileName) {
-		this.fileName = fileName;
+		//this.fileName = fileName;
 		this.userFileIO = new FileIO<>(fileName);
 	}
 	

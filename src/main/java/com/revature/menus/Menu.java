@@ -1,11 +1,13 @@
 package com.revature.menus;
 
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public abstract class Menu {
 
 	private ArrayList<MenuItem> menuItems;
 	private String prompt;
+	private Scanner inputScanner;
 	
 	public Menu() {
 		this.menuItems = null;
@@ -34,6 +36,14 @@ public abstract class Menu {
 		this.prompt = prompt;
 	}
 	
+	public Scanner getInputScanner() {
+		return this.inputScanner;
+	}
+	
+	public void setInputScanner(Scanner scn) {
+		this.inputScanner = scn;
+	}
+	
 	public void display() {
 		System.out.println(this.prompt+"\n");
 		for (MenuItem i : this.menuItems) {
@@ -41,5 +51,7 @@ public abstract class Menu {
 		}
 		System.out.print("\n>>");
 	}
+	
+	public abstract void processSelection(int sel);
 	
 }
