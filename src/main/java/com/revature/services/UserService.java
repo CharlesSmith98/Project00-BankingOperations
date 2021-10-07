@@ -1,8 +1,9 @@
 package com.revature.services;
 
-import java.util.ArrayList;
+import java.sql.SQLException;
+import java.util.List;
 
-import com.revature.dao.FileIO;
+import com.revature.dao.UserDao;
 import com.revature.exceptions.IncorrectPasswordException;
 import com.revature.exceptions.UsernameUnavailableException;
 import com.revature.models.User;
@@ -10,18 +11,18 @@ import com.revature.models.User;
 public class UserService {
 
 	//private String fileName;
-	private FileIO<User> userFileIO;
+	private UserDao uDao;
 	
-	public UserService(String fileName) {
+	public UserService(UserDao u) {
 		//this.fileName = fileName;
-		this.userFileIO = new FileIO<>(fileName);
+		this.uDao = u;
 	}
 	
-	public void register(String first, String last, String user, String pass) {
+	public void register(String first, String last, String email, String user, String pass) {
 		
-		ArrayList<User> userList = null;
+		List<User> userList = null;
 		try {
-			userList = userFileIO.readObjects();
+			userList = uDao.getAllUsers();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -31,28 +32,37 @@ public class UserService {
 			}
 		}
 		
-		if(userList.add(new User(first, last, user, pass, 0))) {
-			System.out.println("User: " + user + " has been successsfully " 
-					+ "registered!!");
+		User u = new User(first, last, email, user, pass, 0);
+		
+		try {
+			uDao.createUser(u);
+		} catch(SQLException e) {
+			e.printStackTrace();
+			System.out.println("User: " + user + " was not registered!!!");
+			System.out.println("Please try again later.");
+			return;
 		}
-		userFileIO.writeObjects(userList);
+		
+		System.out.println("User: " + user + " has been successsfully " 
+				+ "registered!!");
+		
 	}
 	
 	public User login(String user, String pass) {
-		ArrayList<User> userList = null;
+		User u = null;
 		try {
-			userList = userFileIO.readObjects();
+			u = uDao.getUserByUsername(user);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		for (User u : userList) {
-			if (user.equals(u.getUsername())) {
-				if (pass.equals(u.getPassword())) {
-					return u;
-				}
-				throw new IncorrectPasswordException();
+		
+		if(u != null) {
+			if(pass.equals(u.getPassword())) {
+				return u;
 			}
+			throw new IncorrectPasswordException();
 		}
+		
 		
 		System.out.println("\nUser: " + user + " does not exist!\n");
 		return null;

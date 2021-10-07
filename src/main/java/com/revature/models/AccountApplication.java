@@ -1,32 +1,37 @@
 package com.revature.models;
 
+/*
+ * CREATE TABLE IF NOT EXISTS accountApplications(
+	id int PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+	user_id int REFERENCES users(id) NOT NULL,
+	accountType char(1) NOT NULL,
+	pending bool DEFAULT true
+);
+ */
+
 public class AccountApplication {
 
 	private int id;
-	private String firstName;
-	private String lastName;
-	private String email;
+	private int userId;
 	private char accountType;
 	private boolean pending;
 	
 	public AccountApplication() {
-		this.id = -1;
-		this.firstName = "";
-		this.lastName = "";
-		this.email = "";
-		this.accountType = 'D';
-		this.pending = true;
+		super();
 	}
 	
-	public AccountApplication(int id, String first, String last, String email, 
-			char accountType, boolean pending) {
-		this();
-		setId(id);
-		setFirstName(first);
-		setLastName(last);
-		setEmail(email);
-		setAccountType(accountType);
-		setPending(pending);
+	public AccountApplication(int id, int userId, char accountType, boolean pending) {
+		super();
+		this.id = id;
+		this.userId = userId;
+		this.accountType = accountType;
+		this.pending = pending;
+	}
+	
+	public AccountApplication(int userId, char accountType) {
+		this.userId = userId;
+		this.accountType = accountType;
+		this.pending = false;
 	}
 
 	public int getId() {
@@ -37,28 +42,12 @@ public class AccountApplication {
 		this.id = id;
 	}
 
-	public String getFirstName() {
-		return firstName;
+	public int getUserId() {
+		return userId;
 	}
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	public String getLastName() {
-		return lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
+	public void setUserId(int userId) {
+		this.userId = userId;
 	}
 
 	public char getAccountType() {

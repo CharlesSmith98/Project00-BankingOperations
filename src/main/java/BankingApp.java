@@ -4,12 +4,11 @@ import java.util.Scanner;
 import com.revature.exceptions.QuitApplicationException;
 import com.revature.logging.Logging;
 import com.revature.menus.UserMenu;
-import com.revature.services.UserService;
 
 public class BankingApp {
 
-	private static String usersFile = "users.txt";
-	private static UserService userService = new UserService(usersFile);
+	/*private static UserDao uDao = new UserDaoDB();
+	private static UserService userService = new UserService(uDao);*/
 	
 	public static void main(String[] args) {
 		

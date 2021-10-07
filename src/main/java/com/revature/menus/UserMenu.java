@@ -3,16 +3,21 @@ package com.revature.menus;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import com.revature.dao.UserDao;
+import com.revature.dao.UserDaoDB;
 import com.revature.exceptions.IncorrectPasswordException;
 import com.revature.exceptions.QuitApplicationException;
 import com.revature.exceptions.UsernameUnavailableException;
+import com.revature.forms.RegistrationForm;
+import com.revature.forms.UserSignInForm;
 import com.revature.logging.Logging;
 import com.revature.models.User;
 import com.revature.services.UserService;
 
 public class UserMenu extends Menu {
 	
-	private UserService userService = new UserService("users.txt");
+	private UserDao uDao = new UserDaoDB();
+	private UserService userService = new UserService(uDao);
 	
 	public UserMenu(Scanner input) {
 		super();
@@ -37,18 +42,18 @@ public class UserMenu extends Menu {
 		switch (sel) {
 		case 1:
 			boolean isUserNameValid = false;
+			RegistrationForm registerSubMenu = 
+					new RegistrationForm(this.getInputScanner());
 			while (!isUserNameValid) {
 				try {
 					// Create Account
-					System.out.print("First Name: ");
-					String first = this.getInputScanner().next();
-					System.out.print("Last Name: ");
-					String last = this.getInputScanner().next();
-					System.out.print("Username: ");
-					user = this.getInputScanner().next();
-					System.out.print("Password: ");
-					pass = this.getInputScanner().next();
-					userService.register(first, last, user, pass);
+					registerSubMenu.promptData();
+					String first = registerSubMenu.getFirst();
+					String last = registerSubMenu.getLast();
+					String email = registerSubMenu.getEmail();
+					user = registerSubMenu.getUser();
+					pass = registerSubMenu.getPass();
+					userService.register(first, last, email, user, pass);
 					isUserNameValid = true;
 				} catch (UsernameUnavailableException e) {
 					Logging.logger.warn(e.getMessage());
@@ -59,13 +64,14 @@ public class UserMenu extends Menu {
 			break;
 		case 2:
 			User userObj = null;
+			UserSignInForm signInSubMenu = 
+					new UserSignInForm(this.getInputScanner());
 			while (userObj == null) {
 				try {
 					// Sign In
-					System.out.print("Username: ");
-					user = this.getInputScanner().next();
-					System.out.print("Password: ");
-					pass = this.getInputScanner().next();
+					signInSubMenu.promptData();
+					user = signInSubMenu.getUser();
+					pass = signInSubMenu.getPass();
 					userObj = userService.login(user, pass);
 				} catch (IncorrectPasswordException e) {
 					Logging.logger.warn(e.getMessage());
@@ -79,7 +85,7 @@ public class UserMenu extends Menu {
 			} else if (userObj.getRole() == 1) {
 				
 			} else if (userObj.getRole() == 0) {
-				CustomerMenu custMenu = new CustomerMenu(getInputScanner());
+				CustomerMenu custMenu = new CustomerMenu(getInputScanner(), userObj);
 				while(!custMenu.isDone()) {
 					custMenu.display();
 					custMenu.processSelection(getInputScanner().nextInt());
