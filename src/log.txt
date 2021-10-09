@@ -47,3 +47,83 @@
 2021-10-07 15:52:53 INFO  Logging:15 - Application Started
 2021-10-07 15:53:23 INFO  Logging:82 - User: angel logged in successfully
 2021-10-07 15:53:54 INFO  Logging:25 - Application was safely terminated.
+2021-10-07 17:14:02 INFO  Logging:15 - Application Started
+2021-10-07 17:16:38 INFO  Logging:15 - Application Started
+2021-10-07 17:16:56 WARN  Logging:90 - User entered an incorrect password
+2021-10-07 17:22:27 INFO  Logging:15 - Application Started
+2021-10-07 17:22:38 WARN  Logging:92 - User entered an incorrect password
+2021-10-07 17:22:51 INFO  Logging:108 - User: xana logged in successfully
+2021-10-07 17:23:07 WARN  Logging:92 - User entered an incorrect password
+2021-10-07 17:23:25 FATAL Logging:22 - NoSuchElementException caused application to terminate.
+2021-10-07 17:29:11 INFO  Logging:15 - Application Started
+2021-10-07 17:29:22 WARN  Logging:92 - User entered an incorrect password
+2021-10-07 17:29:34 INFO  Logging:112 - User: xana logged in successfully
+2021-10-07 17:29:58 INFO  Logging:25 - Application was safely terminated.
+2021-10-07 17:30:40 INFO  Logging:15 - Application Started
+2021-10-07 17:31:43 INFO  Logging:25 - Application was safely terminated.
+2021-10-07 17:54:10 INFO  Logging:15 - Application Started
+2021-10-07 17:54:23 WARN  Logging:92 - User entered an incorrect password
+2021-10-07 17:54:45 INFO  Logging:112 - User: xana logged in successfully
+2021-10-07 17:56:04 INFO  Logging:25 - Application was safely terminated.
+2021-10-08 15:12:10 INFO  Logging:15 - Application Started
+2021-10-08 15:12:20 INFO  Logging:112 - User: angel logged in successfully
+2021-10-08 15:13:36 INFO  Logging:25 - Application was safely terminated.
+2021-10-08 15:31:37 INFO  Logging:15 - Application Started
+2021-10-08 15:31:50 INFO  Logging:112 - User: angel logged in successfully
+2021-10-08 15:32:45 INFO  Logging:25 - Application was safely terminated.
+2021-10-08 15:51:19 INFO  Logging:15 - Application Started
+2021-10-08 15:51:30 INFO  Logging:112 - User: angel logged in successfully
+2021-10-08 15:53:52 FATAL Logging:22 - NoSuchElementException caused application to terminate.
+2021-10-08 15:55:03 INFO  Logging:15 - Application Started
+2021-10-08 15:55:11 INFO  Logging:112 - User: angel logged in successfully
+2021-10-08 15:56:37 FATAL Logging:22 - NoSuchElementException caused application to terminate.
+2021-10-08 15:59:15 INFO  Logging:15 - Application Started
+2021-10-08 15:59:38 INFO  Logging:112 - User: angel logged in successfully
+2021-10-08 15:59:50 INFO  Logging:25 - Application was safely terminated.
+2021-10-08 16:27:01 INFO  Logging:15 - Application Started
+2021-10-08 16:28:00 INFO  Logging:112 - User: oddball logged in successfully
+2021-10-08 16:28:33 INFO  Logging:112 - User: angel logged in successfully
+2021-10-08 16:29:37 INFO  Logging:25 - Application was safely terminated.
+2021-10-08 16:38:33 INFO  Logging:15 - Application Started
+2021-10-08 16:38:42 WARN  Logging:92 - User entered an incorrect password
+2021-10-08 16:39:10 INFO  Logging:112 - User: xana logged in successfully
+2021-10-08 16:39:36 INFO  Logging:112 - User: angel logged in successfully
+2021-10-08 16:40:48 INFO  Logging:25 - Application was safely terminated.
+2021-10-08 17:34:23 INFO  Logging:15 - Application Started
+2021-10-08 17:34:30 INFO  Logging:112 - User: angel logged in successfully
+2021-10-08 17:34:59 INFO  Logging:25 - Application was safely terminated.
+2021-10-08 17:36:07 INFO  Logging:15 - Application Started
+2021-10-08 17:36:14 INFO  Logging:112 - User: angel logged in successfully
+2021-10-08 17:36:41 INFO  Logging:25 - Application was safely terminated.
+2021-10-08 17:37:49 INFO  Logging:15 - Application Started
+2021-10-08 17:38:16 INFO  Logging:112 - User: angel logged in successfully
+2021-10-08 17:38:36 INFO  Logging:25 - Application was safely terminated.
+2021-10-08 17:38:58 INFO  Logging:15 - Application Started
+2021-10-08 17:39:06 INFO  Logging:112 - User: angel logged in successfully
+2021-10-08 17:39:18 INFO  Logging:25 - Application was safely terminated.
+2021-10-08 17:40:00 INFO  Logging:15 - Application Started
+2021-10-08 17:40:09 INFO  Logging:112 - User: angel logged in successfully
+2021-10-08 17:40:59 INFO  Logging:25 - Application was safely terminated.
+2021-10-08 17:46:18 INFO  Logging:15 - Application Started
+2021-10-08 17:46:25 INFO  Logging:112 - User: angel logged in successfully
+2021-10-08 17:50:29 INFO  Logging:25 - Application was safely terminated.
+2021-10-08 17:50:33 INFO  Logging:15 - Application Started
+2021-10-08 17:50:40 INFO  Logging:112 - User: angel logged in successfully
+2021-10-08 17:51:12 INFO  Logging:112 - User: xana logged in successfully
+2021-10-08 17:51:18 INFO  Logging:25 - Application was safely terminated.
+2021-10-08 17:52:43 INFO  Logging:15 - Application Started
+2021-10-08 17:53:02 INFO  Logging:112 - User: angel logged in successfully
+2021-10-08 17:53:22 INFO  Logging:112 - User: xana logged in successfully
+2021-10-08 17:53:28 INFO  Logging:25 - Application was safely terminated.
+2021-10-08 22:14:46 INFO  Logging:15 - Application Started
+2021-10-08 22:15:02 INFO  Logging:112 - User: angel logged in successfully
+2021-10-08 22:16:13 INFO  Logging:25 - Application was safely terminated.
+2021-10-08 22:20:28 INFO  Logging:15 - Application Started
+2021-10-08 22:20:40 INFO  Logging:112 - User: angel logged in successfully
+2021-10-08 22:22:15 INFO  Logging:25 - Application was safely terminated.
+2021-10-08 22:32:06 INFO  Logging:15 - Application Started
+2021-10-08 22:32:15 INFO  Logging:112 - User: angel logged in successfully
+2021-10-08 22:33:44 INFO  Logging:25 - Application was safely terminated.
+2021-10-08 22:35:12 INFO  Logging:15 - Application Started
+2021-10-08 22:35:19 INFO  Logging:112 - User: angel logged in successfully
+2021-10-08 22:36:55 INFO  Logging:25 - Application was safely terminated.

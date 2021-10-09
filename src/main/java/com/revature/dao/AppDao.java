@@ -7,14 +7,10 @@ import com.revature.models.AccountApplication;
 
 public interface AppDao {
 
-List<AccountApplication> getAllApps();
-	
+	List<AccountApplication> getAllApps();
+	List<AccountApplication> getPendingApps();
 	AccountApplication getApplicationByAppId(int appId);
-	
 	void createApp(AccountApplication a) throws SQLException;
-	
 	void updateApp(AccountApplication a);
-	
 	void deleteApp(AccountApplication a);
-	
 }

@@ -49,7 +49,7 @@ public abstract class Menu {
 		for (MenuItem i : this.menuItems) {
 			System.out.println(i);
 		}
-		System.out.print("\n>>");
+		System.out.print("\n>> ");
 	}
 	
 	public abstract void processSelection(int sel);

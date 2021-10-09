@@ -18,6 +18,7 @@ public class UserMenu extends Menu {
 	
 	private UserDao uDao = new UserDaoDB();
 	private UserService userService = new UserService(uDao);
+	private TryAgainMenu tryAgainMenu = new TryAgainMenu();
 	
 	public UserMenu(Scanner input) {
 		super();
@@ -59,6 +60,19 @@ public class UserMenu extends Menu {
 					Logging.logger.warn(e.getMessage());
 					System.out.println("\nThat username is already taken.");
 					System.out.println("Please use a different one.\n");
+					tryAgainMenu.setInputValid(false);
+					while(!tryAgainMenu.isInputValid()) {
+						tryAgainMenu.display();
+						int num = this.getInputScanner().nextInt();
+						tryAgainMenu.processSelection(num);
+						if(tryAgainMenu.getSelection() == 'Y') {
+							tryAgainMenu.setInputValid(true);
+						} else if(tryAgainMenu.getSelection() == 'N') {
+							tryAgainMenu.setInputValid(true);
+							isUserNameValid = true;
+						}
+					}
+					
 				}
 			}
 			break;
@@ -73,17 +87,37 @@ public class UserMenu extends Menu {
 					user = signInSubMenu.getUser();
 					pass = signInSubMenu.getPass();
 					userObj = userService.login(user, pass);
+					continue;
 				} catch (IncorrectPasswordException e) {
 					Logging.logger.warn(e.getMessage());
 					System.out.println("\nThe password you entered is" 
 							+ " incorrect\n");
+					tryAgainMenu.setInputValid(false);
+					while(!tryAgainMenu.isInputValid()) {
+						tryAgainMenu.display();
+						int num = this.getInputScanner().nextInt();
+						tryAgainMenu.processSelection(num);
+						if(tryAgainMenu.getSelection() == 'Y') {
+							tryAgainMenu.setInputValid(true);
+						} else if(tryAgainMenu.getSelection() == 'N') {
+							tryAgainMenu.setInputValid(true);
+							userObj = new User();
+						}
+					}
 				}
 			}
+			if (userObj.getUsername().equals(""))
+				break;
+			
 			Logging.logger.info("User: " + user + " logged in successfully");
 			if (userObj.getRole() == 2) {
 				
 			} else if (userObj.getRole() == 1) {
-				
+				EmployeeMenu employeeMenu = new EmployeeMenu(getInputScanner(), userObj.getFirstName());
+				while(!employeeMenu.isDone()) {
+					employeeMenu.display();
+					employeeMenu.processSelection(getInputScanner().nextInt());
+				}
 			} else if (userObj.getRole() == 0) {
 				CustomerMenu custMenu = new CustomerMenu(getInputScanner(), userObj);
 				while(!custMenu.isDone()) {

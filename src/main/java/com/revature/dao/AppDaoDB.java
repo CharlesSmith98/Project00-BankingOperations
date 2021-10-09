@@ -38,10 +38,55 @@ public class AppDaoDB implements AppDao {
 		}
 		return null;
 	}
+	
+	@Override
+	public List<AccountApplication> getPendingApps() {
+		
+		List<AccountApplication> appList = new ArrayList<AccountApplication>();
+		
+		try {
+			Connection con = conUtil.getConnection();
+			
+			String sql = "SELECT * FROM accountapplications where pending = true";
+			
+			Statement s = con.createStatement();
+			ResultSet rs = s.executeQuery(sql);
+			
+			while(rs.next()) {
+				appList.add(new AccountApplication(rs.getInt(1), rs.getInt(2), rs.getString(3).charAt(0), rs.getBoolean(4)));
+			}
+			
+			return appList;
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 	@Override
 	public AccountApplication getApplicationByAppId(int appId) {
-		// TODO Auto-generated method stub
+		AccountApplication app = null;
+		
+		try {
+			Connection con = conUtil.getConnection();
+			
+			String sql = "SELECT * FROM accountapplications apps WHERE apps.id = ?";
+			
+			PreparedStatement ps = con.prepareStatement(sql);
+			
+			ps.setInt(1, appId);
+			
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()) {
+				int userId = rs.getInt(2);
+				char accountType = rs.getString(3).charAt(0);
+				boolean pending = rs.getBoolean(4);
+				app = new AccountApplication(appId, userId, accountType, pending);
+			}
+			return app;
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
 
@@ -64,13 +109,45 @@ public class AppDaoDB implements AppDao {
 
 	@Override
 	public void updateApp(AccountApplication a) {
-		// TODO Auto-generated method stub
+
+		try {
+			Connection con = conUtil.getConnection();
+			
+			String sql = "UPDATE accountapplications SET user_id = ?," 
+					+ " accountType = ?, pending = ? WHERE id = ?";
+			
+			PreparedStatement ps = con.prepareStatement(sql);
+			
+			ps.setInt(1, a.getUserId());
+			ps.setString(2, a.getAccountType() + "");
+			ps.setBoolean(3, a.isPending());
+			ps.setInt(4, a.getId());
+			
+			ps.execute();
+			
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
 		
 	}
 
 	@Override
 	public void deleteApp(AccountApplication a) {
-		// TODO Auto-generated method stub
+		
+		try {
+			Connection con = conUtil.getConnection();
+			
+			String sql = "delete from accountapplications where id = ?";
+			
+			PreparedStatement ps = con.prepareStatement(sql);
+			
+			ps.setInt(1, a.getId());
+			
+			ps.execute();
+			
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
 		
 	}
 	

@@ -1,5 +1,8 @@
 package com.revature.models;
 
+import com.revature.dao.UserDao;
+import com.revature.dao.UserDaoDB;
+
 /*
  * CREATE TABLE IF NOT EXISTS accountApplications(
 	id int PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
@@ -15,6 +18,7 @@ public class AccountApplication {
 	private int userId;
 	private char accountType;
 	private boolean pending;
+	private UserDao userDao = new UserDaoDB();
 	
 	public AccountApplication() {
 		super();
@@ -64,6 +68,16 @@ public class AccountApplication {
 
 	public void setPending(boolean pending) {
 		this.pending = pending;
+	}
+
+	@Override
+	public String toString() {
+		String type = "Checking";
+		User user = userDao.getUserById(userId);
+		if (accountType == 'S')
+			type = "Savings";
+		
+		return id + ". Application for a " + type + " account submitted by User: " + user.getUsername();
 	}
 	
 }

@@ -29,7 +29,7 @@ public class CustomerMenu extends Menu {
 		items.add(viewAccounts);
 		items.add(signOut);
 		this.setMenuItems(items);
-		this.setPrompt("-----Customer Options-----");
+		this.setPrompt("-----Welcome, " + u.getFirstName() + "-----");
 		this.done = false;
 	}
 	

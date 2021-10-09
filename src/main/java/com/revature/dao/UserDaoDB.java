@@ -45,6 +45,36 @@ public class UserDaoDB implements UserDao{
 		
 		return null;
 	}
+	
+	@Override
+	public List<User> getCustomers() {
+		
+		List<User> userList = new ArrayList<User>();
+		
+		try {
+			//Make the actual connection to the db
+			Connection con = conUtil.getConnection();
+			
+			//Create a simple statement
+			String sql = "SELECT * FROM users where role = 0";
+			
+			//We need to create a statement with the sql string
+			Statement s = con.createStatement();
+			ResultSet rs = s.executeQuery(sql);
+			
+			//We have to loop through the ResultSet and create objects based off the return
+			while(rs.next()) {
+				userList.add(new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getInt(7)));
+			}
+			
+			return userList;
+			
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
 
 	@Override
 	public User getUserByUsername(String username) {
@@ -73,6 +103,38 @@ public class UserDaoDB implements UserDao{
 				return user;
 			
 			return null;
+			
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public User getUserById(int id) {
+		User user = new User();
+		
+		try {
+			Connection con = conUtil.getConnection();
+			
+			String sql = "SELECT * FROM users WHERE users.id = ?";
+			
+			PreparedStatement ps = con.prepareStatement(sql);
+			
+			ps.setInt(1, id);
+			
+			ResultSet rs = ps.executeQuery();
+			
+			while(rs.next()) {
+				user.setId(rs.getInt(1));
+				user.setFirstName(rs.getString(2));
+				user.setLastName(rs.getString(3));
+				user.setEmail(rs.getString(4));
+				user.setUsername(rs.getString(5));
+				user.setPassword(rs.getString(6));
+				user.setRole(rs.getInt(7));
+			}
+			
+			return user;
 			
 		} catch(SQLException e) {
 			e.printStackTrace();
@@ -109,7 +171,7 @@ public class UserDaoDB implements UserDao{
 		try {
 			Connection con = conUtil.getConnection();
 			String sql = "UPDATE users SET first_name = ?, last_name = ?, email = ?, username = ?, password = ?"
-					+ "WHERE users.id = ?";
+					+ ", role = ? WHERE users.id = ?";
 			
 			PreparedStatement ps = con.prepareStatement(sql);
 			
@@ -118,7 +180,8 @@ public class UserDaoDB implements UserDao{
 			ps.setString(3, u.getEmail());
 			ps.setString(4, u.getUsername());
 			ps.setString(5, u.getPassword());
-			ps.setInt(6, u.getId());
+			ps.setInt(6, u.getRole());
+			ps.setInt(7, u.getId());
 			
 		} catch(SQLException e) {
 			e.printStackTrace();

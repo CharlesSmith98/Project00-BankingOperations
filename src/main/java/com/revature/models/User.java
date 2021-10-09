@@ -115,4 +115,23 @@ public class User implements Serializable{
 	public void setRole(int r) {
 		this.role = r;
 	}
+
+	@Override
+	public String toString() {
+		String roleStr = "";
+		switch(role) {
+		case 0:
+			roleStr = "Customer";
+			break;
+		case 1:
+			roleStr = "Employee";
+			break;
+		case 2:
+			roleStr = "Admin";
+			break;
+		}
+		return id + ". " + roleStr + ": " + username + " ; Email: " + email 
+				+ " ; First Name: " + firstName + " ; Last Name: " + lastName;
+	}
+	
 }
