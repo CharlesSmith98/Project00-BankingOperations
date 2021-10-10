@@ -111,7 +111,11 @@ public class UserMenu extends Menu {
 			
 			Logging.logger.info("User: " + user + " logged in successfully");
 			if (userObj.getRole() == 2) {
-				
+				AdminMenu adminMenu = new AdminMenu(getInputScanner(), userObj.getFirstName());
+				while(!adminMenu.isDone()) {
+					adminMenu.display();
+					adminMenu.processSelection(getInputScanner().nextInt());
+				}
 			} else if (userObj.getRole() == 1) {
 				EmployeeMenu employeeMenu = new EmployeeMenu(getInputScanner(), userObj.getFirstName());
 				while(!employeeMenu.isDone()) {

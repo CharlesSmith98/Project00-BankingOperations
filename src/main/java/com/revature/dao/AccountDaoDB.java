@@ -194,5 +194,23 @@ public class AccountDaoDB implements AccountDao {
 		}
 		
 	}
+	
+	@Override
+	public void cancelAccount(Account a) {
+		
+		try {
+			Connection con = conUtil.getConnection();
+			
+			String sql = "call cancelAccount(?)";
+			
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setInt(1, a.getId());
+			
+			ps.execute();
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+	}
 
 }

@@ -13,4 +13,5 @@ public interface AccountDao {
 	void createAccount(Account a);
 	void updateAccount(Account a);
 	void deleteAccount(Account a);
+	void cancelAccount(Account a);
 }
