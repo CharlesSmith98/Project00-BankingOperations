@@ -79,13 +79,54 @@ public class AccountDaoDB implements AccountDao {
 			
 			ResultSet rs = ps.executeQuery();
 			
-			int userId = rs.getInt(2);
-			long acctNum = rs.getLong(3);
-			long routing = rs.getLong(4);
-			char type = rs.getString(5).charAt(0);
-			double balance = rs.getDouble(6);
+			int userId = 0;
+			long acctNum = 0L;
+			long routing = 0L;
+			char type = ' ';
+			double balance = 0D;
+			while(rs.next()) {
+				userId = rs.getInt(2);
+				acctNum = rs.getLong(3);
+				routing = rs.getLong(4);
+				type = rs.getString(5).charAt(0);
+				balance = rs.getDouble(6);
+			}
 			
 			return new Account(id, userId, acctNum, routing, type, balance);
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+	
+	@Override
+	public Account getAccountByAccountNumber(long num) {
+
+		try {
+			Connection con = conUtil.getConnection();
+			
+			String sql = "SELECT * FROM accounts where acct_num = ?";
+			
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setLong(1, num);
+			
+			ResultSet rs = ps.executeQuery();
+			
+			int id = 0;
+			int userId = 0;
+			long routing = 0L;
+			char type = ' ';
+			double balance = 0D;
+			while(rs.next()) {
+				id = rs.getInt(1);
+				userId = rs.getInt(2);
+				routing = rs.getLong(4);
+				type = rs.getString(5).charAt(0);
+				balance = rs.getDouble(6);
+			}
+			
+			return new Account(id, userId, num, routing, type, balance);
 		} catch(SQLException e) {
 			e.printStackTrace();
 		}

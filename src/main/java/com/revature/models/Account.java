@@ -1,5 +1,7 @@
 package com.revature.models;
 
+import java.text.NumberFormat;
+
 import com.revature.dao.UserDao;
 import com.revature.dao.UserDaoDB;
 
@@ -94,13 +96,14 @@ public class Account {
 
 	@Override
 	public String toString() {
+		NumberFormat formatter = NumberFormat.getCurrencyInstance();
 		String str = "Checking";
 		UserDao uDao = new UserDaoDB();
 		User u = uDao.getUserById(userId);
 		if(type == 'S')
 			str = "Savings";
-		return id + ". " + str + " Account Owned By User: " + u.getUsername() 
-			+ " ; Balance of $" + balance;
+		return id + ". " + str + " Account Ending " + String.format("%04d",(num % 10000)) + " Owned By User: " + u.getUsername() 
+			+ " ; Balance of " + formatter.format(balance);
 	}
 	
 }

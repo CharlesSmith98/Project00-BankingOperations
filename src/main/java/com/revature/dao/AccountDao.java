@@ -9,6 +9,7 @@ public interface AccountDao {
 	List<Account> getAllAccounts();
 	List<Account> getAccountsByUserId(int userId);
 	Account getAccountById(int id);
+	Account getAccountByAccountNumber(long num);
 	void createAccount(Account a);
 	void updateAccount(Account a);
 	void deleteAccount(Account a);

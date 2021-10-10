@@ -1,5 +1,7 @@
 package com.revature.models;
 
+import java.text.NumberFormat;
+
 /*
  * CREATE TABLE IF NOT EXISTS transactions(
 	id int PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
@@ -63,6 +65,7 @@ public class Transaction {
 	
 	@Override
 	public String toString() {
+		NumberFormat formatter = NumberFormat.getCurrencyInstance();
 		String str = null;
 		if(type.equals("D")) {
 			str = "Deposit";
@@ -74,7 +77,7 @@ public class Transaction {
 			str = "Sent Transfer";
 		}
 			
-		return str + " of " + "$" + amount;
+		return str + " of " + formatter.format(amount);
 	}
 	
 }
