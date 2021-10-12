@@ -19,6 +19,7 @@ import com.revature.models.Transaction;
 import com.revature.models.User;
 import com.revature.services.AccountService;
 import com.revature.services.EmployeeService;
+import com.revature.services.TransactionService;
 
 public class AdminMenu extends Menu {
 
@@ -27,6 +28,7 @@ public class AdminMenu extends Menu {
 	private AppDao appDao = new AppDaoDB();
 	private UserDao uDao = new UserDaoDB();
 	private EmployeeService eServ = new EmployeeService(appDao);
+	private TransactionService transactionService = new TransactionService();
 	private String name;
 	
 	public AdminMenu(Scanner in, String n) {
@@ -100,16 +102,14 @@ public class AdminMenu extends Menu {
 			System.out.print("\n>> ");
 			num = in.nextInt();
 			
-			boolean foundCust = false;
 			user = null;
 			for(User u : customers) {
 				if(num == u.getId()) {
-					foundCust = true;
 					user = u;
 				}
 			}
 			
-			if(foundCust) {
+			if(user != null) {
 				AccountDao accDao = new AccountDaoDB();
 				TransactionDao tDao = new TransactionDaoDB();
 				List<Account> accounts = accDao.getAccountsByUserId(user.getId());
@@ -135,7 +135,6 @@ public class AdminMenu extends Menu {
 			user = null;
 			for(User u : customers) {
 				if(num == u.getId()) {
-					foundCust = true;
 					user = u;
 				}
 			}
@@ -198,17 +197,28 @@ public class AdminMenu extends Menu {
 				TransactionForm tForm = new TransactionForm(acct.getId());
 				tForm.checkType(input.nextInt());
 				
-				System.out.println("How much?\n");
-				System.out.print(">> $");
-				tForm.setAmount(input.nextDouble());
+				boolean repeat = true;
+				while(repeat) {
+					System.out.println("How much?\n");
+					System.out.print(">> $");
+					tForm.setAmount(input.nextDouble());
+					
+					if(tForm.getAmount() > acct.getBalance() && (tForm.getType().equals("W") || tForm.getType().equals("TS"))) {
+						System.out.println("\nYou do not have enough funds to perform this transaction\n");
+					} else if(tForm.getAmount() < 0) {
+						System.out.println("\nTransaction cannot have a negative amount\n");
+					} else {
+						repeat = false;
+					}
+				}
 				
-				TransactionDao transactionDao = new TransactionDaoDB();
+				//TransactionDao transactionDao = new TransactionDaoDB();
 				Transaction t = new Transaction(acct.getId(), tForm.getAmount(), tForm.getType());
-				transactionDao.createTransaction(t);
-				AccountService acctService = new AccountService();
+				
+				AccountService acctService = new AccountService(this.input);
 				if (tForm.getType().equalsIgnoreCase("D")) {
 					acctService.addFunds(t);
-				} else if (tForm.getType().equalsIgnoreCase("W") || tForm.getType().equalsIgnoreCase("TS")) {
+				} else if (tForm.getType().equalsIgnoreCase("W")) {
 					acctService.deductFunds(t);
 				}
 				
@@ -219,8 +229,13 @@ public class AdminMenu extends Menu {
 					acctNum = input.nextLong();
 					Account transferRecipient = accountDao.getAccountByAccountNumber(acctNum);
 					Transaction transferReceived = new Transaction(transferRecipient.getId(), tForm.getAmount(), "TR");
+					acctService.deductFunds(t);
 					acctService.addFunds(transferReceived);
+					transactionService.makeTransaction(transferReceived);
+					//transactionDao.createTransaction(transferReceived);
 				}
+				//transactionDao.createTransaction(t);
+				transactionService.makeTransaction(t);
 			}
 			
 			break;

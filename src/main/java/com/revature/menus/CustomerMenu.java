@@ -2,15 +2,12 @@ package com.revature.menus;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 import com.revature.dao.AccountDao;
 import com.revature.dao.AccountDaoDB;
 import com.revature.dao.AppDao;
 import com.revature.dao.AppDaoDB;
-import com.revature.dao.TransactionDao;
-import com.revature.dao.TransactionDaoDB;
 import com.revature.forms.ApplicationForm;
 import com.revature.forms.TransactionForm;
 import com.revature.models.Account;
@@ -19,6 +16,7 @@ import com.revature.models.Transaction;
 import com.revature.models.User;
 import com.revature.services.AccountService;
 import com.revature.services.CustomerService;
+import com.revature.services.TransactionService;
 
 public class CustomerMenu extends Menu {
 
@@ -28,10 +26,13 @@ public class CustomerMenu extends Menu {
 	private AppDao aDao = new AppDaoDB();
 	private AccountDao acctDao = new AccountDaoDB();
 	private CustomerService customerService = new CustomerService(aDao);
+	private AccountService acctService;
+	private TransactionService transactionService = new TransactionService();
 	
 	public CustomerMenu(Scanner in, User u) {
 		this.input = in;
 		this.user = u;
+		this.acctService = new AccountService(in);
 		ArrayList<MenuItem> items = new ArrayList<>();
 		MenuItem applyForAccount = new MenuItem(1, "Apply for a new Account");
 		MenuItem viewAccounts = new MenuItem(2, "View your Accounts");
@@ -64,8 +65,8 @@ public class CustomerMenu extends Menu {
 	
 	@Override
 	public void processSelection(int sel) {
-		List<Account> accounts = acctDao.getAccountsByUserId(user.getId());
-		int acctId;
+		//List<Account> accounts = acctDao.getAccountsByUserId(user.getId());
+		//int acctId;
 		Account acct = null;
 		switch(sel) {
 		case 1:
@@ -75,20 +76,22 @@ public class CustomerMenu extends Menu {
 			customerService.submitApplication(app);
 			break;
 		case 2:
-			System.out.println("-----Your Accounts-----\n");
-			for(Account a : accounts) {
-				System.out.println(a);
-			}
-			System.out.println("");
+//			System.out.println("-----Your Accounts-----\n");
+//			for(Account a : accounts) {
+//				System.out.println(a);
+//			}
+//			System.out.println("");
+//			
+//			System.out.print(">> ");
+//			acctId = this.input.nextInt();
 			
-			System.out.print(">> ");
-			acctId = this.input.nextInt();
+//			acct = null;
+//			for (Account a : accounts) {
+//				if(a.getId() == acctId)
+//					acct = a;
+//			}
 			
-			acct = null;
-			for (Account a : accounts) {
-				if(a.getId() == acctId)
-					acct = a;
-			}
+			acct = acctService.viewAccountsByUserId(user.getId());
 			
 			if(acct != null) {
 				NumberFormat formatter = NumberFormat.getCurrencyInstance();
@@ -98,20 +101,23 @@ public class CustomerMenu extends Menu {
 			
 			break;
 		case 3:
-			System.out.println("-----Your Accounts-----\n");
-			for(Account a : accounts) {
-				System.out.println(a);
-			}
-			System.out.println("\n Select an account to make a transaction\n");
+//			System.out.println("-----Your Accounts-----\n");
+//			for(Account a : accounts) {
+//				System.out.println(a);
+//			}
+//			System.out.println("\n Select an account to make a transaction\n");
+//			
+//			System.out.print(">> ");
+//			acctId = this.input.nextInt();
+//			
+//			acct = null;
+//			for (Account a : accounts) {
+//				if(a.getId() == acctId)
+//					acct = a;
+//			}
+//			
 			
-			System.out.print(">> ");
-			acctId = this.input.nextInt();
-			
-			acct = null;
-			for (Account a : accounts) {
-				if(a.getId() == acctId)
-					acct = a;
-			}
+			acct = acctService.viewAccountsByUserId(user.getId());
 			
 			if(acct != null) {
 				System.out.println("What kind of transaction would you like to make?\n");
@@ -122,17 +128,28 @@ public class CustomerMenu extends Menu {
 				TransactionForm tForm = new TransactionForm(acct.getId());
 				tForm.checkType(input.nextInt());
 				
-				System.out.println("How much?\n");
-				System.out.print(">> $");
-				tForm.setAmount(input.nextDouble());
+				boolean repeat = true;
+				while(repeat) {
+					System.out.println("How much?\n");
+					System.out.print(">> $");
+					tForm.setAmount(input.nextDouble());
+					
+					if(tForm.getAmount() > acct.getBalance() && (tForm.getType().equals("W") || tForm.getType().equals("TS"))) {
+						System.out.println("\nYou do not have enough funds to perform this transaction\n");
+					} else if(tForm.getAmount() < 0) {
+						System.out.println("\nTransaction cannot have a negative amount\n");
+					} else {
+						repeat = false;
+					}
+				}
 				
-				TransactionDao transactionDao = new TransactionDaoDB();
+				//TransactionDao transactionDao = new TransactionDaoDB();
 				Transaction t = new Transaction(acct.getId(), tForm.getAmount(), tForm.getType());
-				transactionDao.createTransaction(t);
-				AccountService acctService = new AccountService();
+				
+				//AccountService acctService = new AccountService();
 				if (tForm.getType().equalsIgnoreCase("D")) {
 					acctService.addFunds(t);
-				} else if (tForm.getType().equalsIgnoreCase("W") || tForm.getType().equalsIgnoreCase("TS")) {
+				} else if (tForm.getType().equalsIgnoreCase("W")) {
 					acctService.deductFunds(t);
 				}
 				
@@ -143,8 +160,13 @@ public class CustomerMenu extends Menu {
 					acctNum = input.nextLong();
 					Account transferRecipient = acctDao.getAccountByAccountNumber(acctNum);
 					Transaction transferReceived = new Transaction(transferRecipient.getId(), tForm.getAmount(), "TR");
+					acctService.deductFunds(t);
 					acctService.addFunds(transferReceived);
+					transactionService.makeTransaction(transferReceived);
+					//transactionDao.createTransaction(transferReceived);
 				}
+				transactionService.makeTransaction(t);
+				//transactionDao.createTransaction(t);
 			}
 			
 			break;
