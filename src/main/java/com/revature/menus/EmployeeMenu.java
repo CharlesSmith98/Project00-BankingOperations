@@ -12,6 +12,7 @@ import com.revature.dao.TransactionDao;
 import com.revature.dao.TransactionDaoDB;
 import com.revature.dao.UserDao;
 import com.revature.dao.UserDaoDB;
+import com.revature.logging.Logging;
 import com.revature.models.Account;
 import com.revature.models.AccountApplication;
 import com.revature.models.Transaction;
@@ -54,12 +55,15 @@ public class EmployeeMenu extends Menu {
 		Scanner in = this.getInputScanner();
 		int num;
 		switch(sel) {
-		case 1:
+		case 1: // APPROVE/ REJECT APPLICATION
+			// Get list of open applications
 			List<AccountApplication> apps = appDao.getPendingApps();
 			System.out.println("-----Open Applications-----\n");
 			for (AccountApplication a : apps) {
 				System.out.println(a);
 			}
+			
+			// Prompt user to select an application 
 			System.out.print("\nPlease select an application.\n>> ");
 			num = in.nextInt();
 			boolean foundApp = false;
@@ -68,6 +72,7 @@ public class EmployeeMenu extends Menu {
 					foundApp = true;
 			}
 			
+			// If the application has been found, ask for approval/ disapproval
 			if (foundApp) {
 				System.out.println("You have selected Application: " 
 						+ appDao.getApplicationByAppId(num) + "\n");
@@ -75,21 +80,27 @@ public class EmployeeMenu extends Menu {
 				System.out.println("Press 2 To Deny the application\n>> ");
 				if(in.nextInt() == 1) {
 					eServ.approve(num);
+					Logging.logger.info("Application for Account Approved");
 				} else if(in.nextInt() == 2) {
 					eServ.deny(num);
+					Logging.logger.info("Application for Account Rejected");
 				}
 			}
 			break;
-		case 2:
+		case 2: // VIEW CUSTOMER INFO
+			// Get list of customers
 			List<User> customers = uDao.getCustomers();
 			System.out.println("-----Customers-----\n");
 			for (User u : customers) {
 				System.out.println(u);
 			}
+			
+			// Prompt user to select a customer
 			System.out.println("\nPlease select a customer to view their accounts,");
 			System.out.print("\n>> ");
 			num = in.nextInt();
 			
+			// Get specified customer
 			boolean foundCust = false;
 			User user = null;
 			for(User u : customers) {
@@ -99,15 +110,16 @@ public class EmployeeMenu extends Menu {
 				}
 			}
 			
+			// If the customer exists in the database, list their transactions
 			if(foundCust) {
 				AccountDao accDao = new AccountDaoDB();
 				TransactionDao tDao = new TransactionDaoDB();
 				List<Account> accounts = accDao.getAccountsByUserId(user.getId());
 				for (Account a : accounts) {
+					System.out.println("\n" + a + "\n");
 					for (Transaction t : tDao.getTransactionsFromAccount(a.getId())) {
 						System.out.println(t);
 					}
-					System.out.println("\n" + a + "\n");
 				}
 			}
 			

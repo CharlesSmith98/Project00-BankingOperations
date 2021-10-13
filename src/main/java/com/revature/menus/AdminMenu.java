@@ -13,6 +13,7 @@ import com.revature.dao.TransactionDaoDB;
 import com.revature.dao.UserDao;
 import com.revature.dao.UserDaoDB;
 import com.revature.forms.TransactionForm;
+import com.revature.logging.Logging;
 import com.revature.models.Account;
 import com.revature.models.AccountApplication;
 import com.revature.models.Transaction;
@@ -66,12 +67,15 @@ public class AdminMenu extends Menu {
 		Scanner in = this.getInputScanner();
 		int num;
 		switch(sel) {
-		case 1:
+		case 1: // APPLICATIONS APPROVAL/ DISAPPROVAL
+			// Display Open Applications
 			List<AccountApplication> apps = appDao.getPendingApps();
 			System.out.println("-----Open Applications-----\n");
 			for (AccountApplication a : apps) {
 				System.out.println(a);
 			}
+			
+			// Prompt the user to select an application
 			System.out.print("\nPlease select an application.\n>> ");
 			num = in.nextInt();
 			boolean foundApp = false;
@@ -80,6 +84,8 @@ public class AdminMenu extends Menu {
 					foundApp = true;
 			}
 			
+			// If the application was found,
+			// Prompt for approval/ disapproval
 			if (foundApp) {
 				System.out.println("You have selected Application: " 
 						+ appDao.getApplicationByAppId(num) + "\n");
@@ -87,21 +93,27 @@ public class AdminMenu extends Menu {
 				System.out.println("Press 2 To Deny the application\n>> ");
 				if(in.nextInt() == 1) {
 					eServ.approve(num);
+					Logging.logger.info("Application for Account Approved");
 				} else if(in.nextInt() == 2) {
 					eServ.deny(num);
+					Logging.logger.info("Application for Account Rejected");
 				}
 			}
 			break;
-		case 2:
+		case 2: // CUSTOMER INFORMATION
+			// List all Customers
 			customers = uDao.getCustomers();
 			System.out.println("-----Customers-----\n");
 			for (User u : customers) {
 				System.out.println(u);
 			}
+			
+			// Prompt the user to select a customer
 			System.out.println("\nPlease select a customer to view their accounts,");
 			System.out.print("\n>> ");
 			num = in.nextInt();
 			
+			// Get the specified user
 			user = null;
 			for(User u : customers) {
 				if(num == u.getId()) {
@@ -109,29 +121,34 @@ public class AdminMenu extends Menu {
 				}
 			}
 			
+			// If the user exists in the database, list all of their transactions
 			if(user != null) {
 				AccountDao accDao = new AccountDaoDB();
 				TransactionDao tDao = new TransactionDaoDB();
 				List<Account> accounts = accDao.getAccountsByUserId(user.getId());
 				for (Account a : accounts) {
+					System.out.println("\n" + a + "\n");
 					for (Transaction t : tDao.getTransactionsFromAccount(a.getId())) {
 						System.out.println(t);
 					}
-					System.out.println("\n" + a + "\n");
 				}
 			}
 			
 			break;
-		case 3:
+		case 3: // CANCEL ACCOUNTS
+			// List all customers
 			customers = uDao.getCustomers();
 			System.out.println("-----Customers-----\n");
 			for (User u : customers) {
 				System.out.println(u);
 			}
+			
+			// Prompt the user to select a customer
 			System.out.println("\nPlease select a customer to view their accounts,");
 			System.out.print("\n>> ");
 			num = in.nextInt();
 			
+			// Get the specified customer
 			user = null;
 			for(User u : customers) {
 				if(num == u.getId()) {
@@ -139,19 +156,22 @@ public class AdminMenu extends Menu {
 				}
 			}
 			
+			// If the customer is in the database
 			if(user != null) {
 				AccountDao acctDao = new AccountDaoDB();
 				
+				// Get a list of their accounts
 				List<Account> accounts = acctDao.getAccountsByUserId(user.getId());
 				for (Account acct : accounts) {
 					System.out.println(acct);
 				}
 				
+				// Prompt the user to select an account to cancel
 				System.out.println("\nWhich account would you like to cancel?");
 				System.out.print("\n>> ");
 				num = in.nextInt();
 				
-				
+				// Confirm action with the user
 				Account a = acctDao.getAccountById(num);
 				System.out.println("You are trying to cancel the following account\n");
 				System.out.println(a);
@@ -164,11 +184,13 @@ public class AdminMenu extends Menu {
 				
 				if (num == 1) {
 					acctDao.cancelAccount(a);
+					Logging.logger.info("Account No " + a.getNum() + " has been closed");
 				} else if (num == 2) {}
 			}
 			
 			break;
-		case 4:
+		case 4: // MAKE TRANSACTIONS
+			// List all accounts
 			AccountDao accountDao = new AccountDaoDB();
 			List<Account> accounts = accountDao.getAllAccounts();
 			System.out.println("\n");
@@ -177,18 +199,22 @@ public class AdminMenu extends Menu {
 				System.out.println(a);
 			}
 			
+			// Prompt the user to select an account
 			System.out.println("\n Select an account to make a transaction\n");
 			
 			System.out.print(">> ");
 			int acctId = this.input.nextInt();
 			
+			// Get the specified account
 			Account acct = null;
 			for (Account a : accounts) {
 				if(a.getId() == acctId)
 					acct = a;
 			}
 			
+			// If the account is in the database
 			if(acct != null) {
+				// Prompt the user for the type of transaction to make
 				System.out.println("What kind of transaction would you like to make?\n");
 				System.out.println("Press 1 for Deposit");
 				System.out.println("Press 2 for Withdrawl");
@@ -197,6 +223,7 @@ public class AdminMenu extends Menu {
 				TransactionForm tForm = new TransactionForm(acct.getId());
 				tForm.checkType(input.nextInt());
 				
+				// Ask for input and check that it's valid
 				boolean repeat = true;
 				while(repeat) {
 					System.out.println("How much?\n");
@@ -205,23 +232,28 @@ public class AdminMenu extends Menu {
 					
 					if(tForm.getAmount() > acct.getBalance() && (tForm.getType().equals("W") || tForm.getType().equals("TS"))) {
 						System.out.println("\nYou do not have enough funds to perform this transaction\n");
+						Logging.logger.warn("User does not have sufficient funds to perform this transaction");
 					} else if(tForm.getAmount() < 0) {
 						System.out.println("\nTransaction cannot have a negative amount\n");
+						Logging.logger.warn("User tried to perform a transaction with a negative amount");
 					} else {
 						repeat = false;
 					}
 				}
 				
-				//TransactionDao transactionDao = new TransactionDaoDB();
+				// Create transaction
 				Transaction t = new Transaction(acct.getId(), tForm.getAmount(), tForm.getType());
 				
+				// Update the balance
 				AccountService acctService = new AccountService(this.input);
 				if (tForm.getType().equalsIgnoreCase("D")) {
 					acctService.addFunds(t);
 				} else if (tForm.getType().equalsIgnoreCase("W")) {
 					acctService.deductFunds(t);
 				}
+				Logging.logger.info("Account Balance has been updated");
 				
+				// If it's a transfer, ask what account the account is going to
 				long acctNum;
 				if(tForm.getType().equals("TS")) {
 					System.out.println("\nEnter the account number of the account you wish to transfer funds to.\n");
@@ -232,10 +264,10 @@ public class AdminMenu extends Menu {
 					acctService.deductFunds(t);
 					acctService.addFunds(transferReceived);
 					transactionService.makeTransaction(transferReceived);
-					//transactionDao.createTransaction(transferReceived);
+					Logging.logger.info("Transfer Recipient Balance has been updated");
 				}
-				//transactionDao.createTransaction(t);
 				transactionService.makeTransaction(t);
+				Logging.logger.info("Transaction recorded in the database");
 			}
 			
 			break;

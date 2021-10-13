@@ -216,3 +216,13 @@
 2021-10-12 11:57:55 INFO  Logging:112 - User: katana logged in successfully
 2021-10-12 11:59:10 INFO  Logging:112 - User: lyoko logged in successfully
 2021-10-12 12:02:11 INFO  Logging:25 - Application was safely terminated.
+2021-10-13 08:38:32 INFO  Logging:15 - Application Started
+2021-10-13 08:38:59 INFO  Logging:124 - User: angel logged in successfully
+2021-10-13 08:40:17 INFO  Logging:124 - User: lyoko logged in successfully
+2021-10-13 08:40:34 INFO  Logging:254 - Account Balance has been updated
+2021-10-13 08:40:43 INFO  Logging:267 - Transfer Recipient Balance has been updated
+2021-10-13 08:40:43 INFO  Logging:270 - Transaction recorded in the database
+2021-10-13 08:41:33 INFO  Logging:25 - Application was safely terminated.
+2021-10-13 08:43:25 INFO  Logging:15 - Application Started
+2021-10-13 08:43:35 INFO  Logging:124 - User: katana logged in successfully
+2021-10-13 08:43:53 INFO  Logging:25 - Application was safely terminated.

@@ -6,6 +6,7 @@ import java.util.List;
 import com.revature.dao.UserDao;
 import com.revature.exceptions.IncorrectPasswordException;
 import com.revature.exceptions.UsernameUnavailableException;
+import com.revature.logging.Logging;
 import com.revature.models.User;
 
 public class UserService {
@@ -43,6 +44,7 @@ public class UserService {
 			return;
 		}
 		
+		Logging.logger.info("User: " + user + " was registered in the database.");
 		System.out.println("User: " + user + " has been successsfully " 
 				+ "registered!!");
 		

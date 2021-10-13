@@ -47,17 +47,23 @@ public class UserMenu extends Menu {
 					new RegistrationForm(this.getInputScanner());
 			while (!isUserNameValid) {
 				try {
-					// Create Account
+					// User fills out registration form
 					registerSubMenu.promptData();
 					String first = registerSubMenu.getFirst();
 					String last = registerSubMenu.getLast();
 					String email = registerSubMenu.getEmail();
 					user = registerSubMenu.getUser();
 					pass = registerSubMenu.getPass();
+					
+					// Register user into the database
 					userService.register(first, last, email, user, pass);
 					isUserNameValid = true;
-				} catch (UsernameUnavailableException e) {
+				} catch (UsernameUnavailableException e) { 
+					// If the username is already in use... 
+					// (1) Log the exception
 					Logging.logger.warn(e.getMessage());
+					
+					// (2) Tell the user to use a different one
 					System.out.println("\nThat username is already taken.");
 					System.out.println("Please use a different one.\n");
 					tryAgainMenu.setInputValid(false);
@@ -77,18 +83,23 @@ public class UserMenu extends Menu {
 			}
 			break;
 		case 2:
+			// userObj is the user that is currently logged in
 			User userObj = null;
 			UserSignInForm signInSubMenu = 
 					new UserSignInForm(this.getInputScanner());
 			while (userObj == null) {
 				try {
-					// Sign In
+					// Prompt the user to sign In
 					signInSubMenu.promptData();
 					user = signInSubMenu.getUser();
 					pass = signInSubMenu.getPass();
+					
+					// Log in
 					userObj = userService.login(user, pass);
 					continue;
 				} catch (IncorrectPasswordException e) {
+					// If the password is incorrect,
+					// (1) Log the exception
 					Logging.logger.warn(e.getMessage());
 					System.out.println("\nThe password you entered is" 
 							+ " incorrect\n");
@@ -109,19 +120,24 @@ public class UserMenu extends Menu {
 			if (userObj.getUsername().equals(""))
 				break;
 			
+			// Log that the user has logged in
 			Logging.logger.info("User: " + user + " logged in successfully");
+			
+			// If the user is an admin, give options for admins
 			if (userObj.getRole() == 2) {
 				AdminMenu adminMenu = new AdminMenu(getInputScanner(), userObj.getFirstName());
 				while(!adminMenu.isDone()) {
 					adminMenu.display();
 					adminMenu.processSelection(getInputScanner().nextInt());
 				}
+			// If the user is an employee, give options for employees
 			} else if (userObj.getRole() == 1) {
 				EmployeeMenu employeeMenu = new EmployeeMenu(getInputScanner(), userObj.getFirstName());
 				while(!employeeMenu.isDone()) {
 					employeeMenu.display();
 					employeeMenu.processSelection(getInputScanner().nextInt());
 				}
+			// If the user is a customer, give customer options
 			} else if (userObj.getRole() == 0) {
 				CustomerMenu custMenu = new CustomerMenu(getInputScanner(), userObj);
 				while(!custMenu.isDone()) {

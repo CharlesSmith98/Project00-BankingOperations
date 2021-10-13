@@ -10,6 +10,7 @@ import com.revature.dao.AppDao;
 import com.revature.dao.AppDaoDB;
 import com.revature.forms.ApplicationForm;
 import com.revature.forms.TransactionForm;
+import com.revature.logging.Logging;
 import com.revature.models.Account;
 import com.revature.models.AccountApplication;
 import com.revature.models.Transaction;
@@ -65,34 +66,19 @@ public class CustomerMenu extends Menu {
 	
 	@Override
 	public void processSelection(int sel) {
-		//List<Account> accounts = acctDao.getAccountsByUserId(user.getId());
-		//int acctId;
 		Account acct = null;
 		switch(sel) {
-		case 1:
+		case 1: // APPLY FOR AN ACCOUNT
 			ApplicationForm appForm = new ApplicationForm(this.input);
 			appForm.promptData();
 			AccountApplication app = new AccountApplication(user.getId(), appForm.getAccountType());
 			customerService.submitApplication(app);
 			break;
-		case 2:
-//			System.out.println("-----Your Accounts-----\n");
-//			for(Account a : accounts) {
-//				System.out.println(a);
-//			}
-//			System.out.println("");
-//			
-//			System.out.print(">> ");
-//			acctId = this.input.nextInt();
-			
-//			acct = null;
-//			for (Account a : accounts) {
-//				if(a.getId() == acctId)
-//					acct = a;
-//			}
-			
+		case 2: // VIEW ACCOUNTS
+			// Get list of accounts
 			acct = acctService.viewAccountsByUserId(user.getId());
 			
+			// Display Account Info
 			if(acct != null) {
 				NumberFormat formatter = NumberFormat.getCurrencyInstance();
 				System.out.println("\n-----Account Ending " + String.format("%04d",(acct.getNum() % 10000)) + "-----");
@@ -100,26 +86,13 @@ public class CustomerMenu extends Menu {
 			}
 			
 			break;
-		case 3:
-//			System.out.println("-----Your Accounts-----\n");
-//			for(Account a : accounts) {
-//				System.out.println(a);
-//			}
-//			System.out.println("\n Select an account to make a transaction\n");
-//			
-//			System.out.print(">> ");
-//			acctId = this.input.nextInt();
-//			
-//			acct = null;
-//			for (Account a : accounts) {
-//				if(a.getId() == acctId)
-//					acct = a;
-//			}
-//			
-			
+		case 3: // MAKE TRANSACTION
+			// Get account
 			acct = acctService.viewAccountsByUserId(user.getId());
 			
+			// If the account exists in the database
 			if(acct != null) {
+				// Prompt for transaction type
 				System.out.println("What kind of transaction would you like to make?\n");
 				System.out.println("Press 1 for Deposit");
 				System.out.println("Press 2 for Withdrawl");
@@ -128,6 +101,7 @@ public class CustomerMenu extends Menu {
 				TransactionForm tForm = new TransactionForm(acct.getId());
 				tForm.checkType(input.nextInt());
 				
+				// Ask for the transaction amount and ensure that it's valid
 				boolean repeat = true;
 				while(repeat) {
 					System.out.println("How much?\n");
@@ -136,23 +110,27 @@ public class CustomerMenu extends Menu {
 					
 					if(tForm.getAmount() > acct.getBalance() && (tForm.getType().equals("W") || tForm.getType().equals("TS"))) {
 						System.out.println("\nYou do not have enough funds to perform this transaction\n");
+						Logging.logger.warn("User does not have sufficient funds to perform this transaction");
 					} else if(tForm.getAmount() < 0) {
 						System.out.println("\nTransaction cannot have a negative amount\n");
+						Logging.logger.warn("User tried to perform a transaction with a negative amount");
 					} else {
 						repeat = false;
 					}
 				}
 				
-				//TransactionDao transactionDao = new TransactionDaoDB();
+				// Create transaction
 				Transaction t = new Transaction(acct.getId(), tForm.getAmount(), tForm.getType());
 				
-				//AccountService acctService = new AccountService();
+				// Update balance
 				if (tForm.getType().equalsIgnoreCase("D")) {
 					acctService.addFunds(t);
 				} else if (tForm.getType().equalsIgnoreCase("W")) {
 					acctService.deductFunds(t);
 				}
+				Logging.logger.info("Account Balance has been updated");
 				
+				// If it's a transfer, ask what account it's going to
 				long acctNum;
 				if(tForm.getType().equals("TS")) {
 					System.out.println("\nEnter the account number of the account you wish to transfer funds to.\n");
@@ -163,10 +141,10 @@ public class CustomerMenu extends Menu {
 					acctService.deductFunds(t);
 					acctService.addFunds(transferReceived);
 					transactionService.makeTransaction(transferReceived);
-					//transactionDao.createTransaction(transferReceived);
+					Logging.logger.info("Transfer Recipient Balance has been updated");
 				}
 				transactionService.makeTransaction(t);
-				//transactionDao.createTransaction(t);
+				Logging.logger.info("Transaction recorded in the database");
 			}
 			
 			break;
